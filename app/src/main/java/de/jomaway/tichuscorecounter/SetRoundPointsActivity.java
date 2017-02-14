@@ -39,9 +39,10 @@ public class SetRoundPointsActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 // app icon in action bar clicked; go home
-                Intent intent = new Intent(this, MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
+                Intent returnIntent = new Intent();
+                //returnIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                setResult(RESULT_CANCELED,returnIntent);
+                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -173,10 +174,11 @@ public class SetRoundPointsActivity extends AppCompatActivity {
     public void done(View view){
         Log.i(TAG,"done");
         calculatePoints();
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra(EXTRA_TEAM_A_SCORE, totalScoreTeamA);
-        intent.putExtra(EXTRA_TEAM_B_SCORE, totalScoreTeamB);
-        startActivity(intent);
+        Intent returnIntent = new Intent();
+        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        returnIntent.putExtra(EXTRA_TEAM_A_SCORE, totalScoreTeamA);
+        returnIntent.putExtra(EXTRA_TEAM_B_SCORE, totalScoreTeamB);
+        setResult(RESULT_OK,returnIntent);
+        finish();
     }
 }

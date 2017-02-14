@@ -62,8 +62,8 @@
             android:layout_weight="1"
             android:fontFamily="sans-serif-smallcaps"
             android:text="@string/team_name_B"
-            android:textColor="@color/teamB"
             android:textAlignment="textEnd"
+            android:textColor="@color/teamB"
             android:textSize="@dimen/team_name_text_size" />
     </LinearLayout>
 
@@ -94,41 +94,41 @@
 
         <com.makeramen.roundedimageview.RoundedImageView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/player1_image"
-            android:src="@drawable/ic_happy"
             style="@style/PlayerImageStyle"
+            android:src="@drawable/ic_happy"
             app:riv_border_color="@color/teamA"
             app:riv_border_width="@dimen/player_image_border_width"
             app:riv_mutate_background="true"
-            app:riv_oval="true"/>
+            app:riv_oval="true" />
 
         <TextView
             android:id="@+id/player1_name"
+            style="@style/PlayerNameStyle"
             android:layout_below="@id/player1_image"
-            android:text="@string/player_1"
-            style="@style/PlayerNameStyle"/>
+            android:text="@string/player_1" />
 
         <com.makeramen.roundedimageview.RoundedImageView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/player2_image"
+            style="@style/PlayerImageStyle"
             android:layout_alignParentEnd="true"
             android:src="@drawable/ic_baby"
-            style="@style/PlayerImageStyle"
             app:riv_border_color="@color/teamB"
             app:riv_border_width="@dimen/player_image_border_width"
             app:riv_mutate_background="true"
-            app:riv_oval="true"/>
+            app:riv_oval="true" />
 
         <TextView
             android:id="@+id/player2_name"
+            style="@style/PlayerNameStyle"
             android:layout_alignParentEnd="true"
             android:layout_below="@id/player2_image"
-            android:text="@string/player_2"
-            style="@style/PlayerNameStyle"/>
+            android:text="@string/player_2" />
 
         <com.makeramen.roundedimageview.RoundedImageView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/player3_image"
+            style="@style/PlayerImageStyle"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            style="@style/PlayerImageStyle"
             android:src="@drawable/ic_scared"
             app:riv_border_color="@color/teamA"
             app:riv_border_width="@dimen/player_image_border_width"
@@ -137,15 +137,15 @@
 
         <TextView
             android:id="@+id/player3_name"
+            style="@style/PlayerNameStyle"
             android:layout_above="@id/player3_image"
             android:layout_alignParentEnd="true"
-            android:text="@string/player_3"
-            style="@style/PlayerNameStyle"/>
+            android:text="@string/player_3" />
 
         <com.makeramen.roundedimageview.RoundedImageView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/player4_image"
-            android:layout_alignParentBottom="true"
             style="@style/PlayerImageStyle"
+            android:layout_alignParentBottom="true"
             android:src="@drawable/ic_hipster"
             app:riv_border_color="@color/teamB"
             app:riv_border_width="@dimen/player_image_border_width"
@@ -154,16 +154,16 @@
 
         <TextView
             android:id="@+id/player4_name"
+            style="@style/PlayerNameStyle"
             android:layout_above="@id/player4_image"
-            android:text="@string/player_4"
-            style="@style/PlayerNameStyle" />
+            android:text="@string/player_4" />
     </RelativeLayout>
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        android:text="@string/btn_finish_Round"
-        android:onClick="finishRound"/>
+        android:onClick="finishRound"
+        android:text="@string/btn_finish_Round" />
 
 </LinearLayout>

@@ -3,8 +3,8 @@
 
     <string name="team_name_A">Team A</string>
     <string name="team_name_B">Team B</string>
-    <string name="team_score_A">235</string>
-    <string name="team_score_B">1000</string>
+    <string name="team_score_A">0</string>
+    <string name="team_score_B">0</string>
 
     <string name="player_1">Jonas</string>
     <string name="player_2">Anja</string>
@@ -15,4 +15,11 @@
     <string name="btn_great_tichu">GT</string>
     <string name="btn_player_out">OUT</string>
     <string name="btn_finish_Round">Runde beenden</string>
+
+    <string name="menu_new_game">New Game</string>
+    <string name="menu_set_players">Set Players</string>
+    <string name="menu_settings">Settings</string>
+
+    <string name="toast_new_game">New Game started</string>
+    <string name="toast_load_game">Score loaded</string>
 </resources>
