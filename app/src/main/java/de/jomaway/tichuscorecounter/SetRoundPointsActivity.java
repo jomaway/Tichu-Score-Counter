@@ -18,10 +18,11 @@ import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
 import static android.os.Build.VERSION_CODES.M;
 
 public class SetRoundPointsActivity extends AppCompatActivity {
+    private static final String TAG = "SetRoundPointsActivity";
+
     public final static String EXTRA_TEAM_A_SCORE = "de.jomaway.tichuscorecounter.TEAM_A_SCORE";
     public final static String EXTRA_TEAM_B_SCORE = "de.jomaway.tichuscorecounter.TEAM_B_SCORE";
 
-    private static final String TAG = "SetRoundPointsActivity";
     private static final int TEAM_MIN_SCORE = 0;
     private static final int TEAM_MAX_SCORE = 30;
 

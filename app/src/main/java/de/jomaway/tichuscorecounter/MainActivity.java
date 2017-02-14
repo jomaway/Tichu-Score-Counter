@@ -19,12 +19,15 @@ import java.util.zip.Inflater;
 import static android.R.attr.data;
 
 public class MainActivity extends AppCompatActivity {
+    // Constants
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int PLAYER_ACTIONBAR_PLAYER_TAG = 33;
     private static final int ROUND_POINT_REQUEST = 968;
+    private static final int SET_PLAYERS_REQUEST = 250;
     private static final String TEAM_A_GAMESCORE = "gamescoreTeamA";
     private static final String TEAM_B_GAMESCORE = "gamescoreTeamB";
 
+    // MARK: Model
     // Views
     TextView player1;
     TextView player2;
@@ -39,9 +42,11 @@ public class MainActivity extends AppCompatActivity {
     String player3_name;
     String player4_name;
 
+    // Score Variables
     int totalScore_TeamA;
     int totalScore_TeamB;
 
+    // MARK: App Lifecycle Methods
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,22 +88,52 @@ public class MainActivity extends AppCompatActivity {
                 newGame();
                 return true;
             case R.id.menu_setPlayers:
+                Intent intent = new Intent(this, SetPlayersActivity.class);
+                startActivityForResult(intent, SET_PLAYERS_REQUEST);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
+    // Gets the Result back from an startActivityForResult
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // Check for the right Result
+            switch (resultCode) {
+                case RESULT_OK:
+                    if (requestCode == ROUND_POINT_REQUEST) {
+                        int roundScoreTeamA = data.getIntExtra(SetRoundPointsActivity.EXTRA_TEAM_A_SCORE, 0);
+                        int roundScoreTeamB = data.getIntExtra(SetRoundPointsActivity.EXTRA_TEAM_B_SCORE, 0);
+                        addPoints(roundScoreTeamA, roundScoreTeamB);
+                        updateTotalScore();
+                    } else if (requestCode == SET_PLAYERS_REQUEST) {
+                        player1_name = data.getStringExtra(SetPlayersActivity.EXTRA_PLAYER1);
+                        player2_name = data.getStringExtra(SetPlayersActivity.EXTRA_PLAYER2);
+                        player3_name = data.getStringExtra(SetPlayersActivity.EXTRA_PLAYER3);
+                        player4_name = data.getStringExtra(SetPlayersActivity.EXTRA_PLAYER4);
+                        updatePlayerNames();
+                    }
+                    break;
+                case RESULT_CANCELED:
+                    break;
+                default:
+                    break;
+            }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        saveGame();
+    }
+
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
-
         savedInstanceState.putInt("TeamA",totalScore_TeamA);
         savedInstanceState.putInt("TeamB",totalScore_TeamB);
-        savedInstanceState.putString("Player1", player1_name);
-        savedInstanceState.putString("Player2", player2_name);
-        savedInstanceState.putString("Player3", player3_name);
-        savedInstanceState.putString("Player4", player4_name);
     }
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
@@ -109,11 +144,12 @@ public class MainActivity extends AppCompatActivity {
         totalScore_TeamB = savedInstanceState.getInt("TeamB");
     }
 
-
+    // MARK: game Methods
+    // Add Points to the total Score of both Teams
     private void addPoints(int teamA_Points, int teamB_Points) {
         totalScore_TeamA += teamA_Points;
         totalScore_TeamB += teamB_Points;
-
+        // Check if a Team won already
         checkForWinner();
     }
 
@@ -144,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    public void newGame() {
+    private void newGame() {
         Log.i(TAG,"new Game started");
         totalScore_TeamA = 0;
         totalScore_TeamB = 0;
@@ -174,6 +210,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    // MARK: UI Update Methods
     // updates the score
     private void updateTotalScore() {
         Log.d(TAG,"update Total Score");
@@ -190,6 +227,7 @@ public class MainActivity extends AppCompatActivity {
         player4.setText(player4_name);
     }
 
+    // MARK: Methods that get called by User interaction
     // gets called if you tap on an player
     public void selectedPlayer(View view){
         //showPlayerAction(view.getId());
@@ -205,32 +243,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    // Gets the Result back from an startActivityForResult
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        // Check for the right Result
-        if (requestCode == ROUND_POINT_REQUEST) {
-            switch (resultCode) {
-                case RESULT_OK:
-                    int roundScoreTeamA = data.getIntExtra(SetRoundPointsActivity.EXTRA_TEAM_A_SCORE, 0);
-                    int roundScoreTeamB = data.getIntExtra(SetRoundPointsActivity.EXTRA_TEAM_B_SCORE, 0);
-                    addPoints(roundScoreTeamA,roundScoreTeamB);
-                    updateTotalScore();
-                    break;
-                case RESULT_CANCELED:
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        saveGame();
-    }
 
     /*
     private void showPlayerAction(int playerID){
