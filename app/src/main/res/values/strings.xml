@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Tichu Score Counter</string>
+
+    <string name="team_name_A">Team A</string>
+    <string name="team_name_B">Team B</string>
+    <string name="team_score_A">235</string>
+    <string name="team_score_B">1000</string>
+
+    <string name="player_1">Jonas</string>
+    <string name="player_2">Anja</string>
+    <string name="player_3">Lena</string>
+    <string name="player_4">Christian</string>
+
+    <string name="btn_tichu">T</string>
+    <string name="btn_great_tichu">GT</string>
+    <string name="btn_player_out">OUT</string>
+    <string name="btn_finish_Round">Runde beenden</string>
+</resources>

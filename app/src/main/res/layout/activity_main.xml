@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="de.jomaway.tichuscorecounter.MainActivity">
+
+    <LinearLayout
+        android:id="@+id/teambar"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        android:layout_marginBottom="@dimen/teambar_margin_bottom"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/teamA"
+            android:layout_width="@dimen/zero_for_layout_weight"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="sans-serif-smallcaps"
+            android:text="@string/team_name_A"
+            android:textColor="@color/teamA"
+            android:textSize="@dimen/team_name_text_size" />
+
+        <TextView
+            android:id="@+id/teamA_score"
+            android:layout_width="@dimen/zero_for_layout_weight"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="@dimen/team_score_text_padding"
+            android:text="@string/team_score_A"
+            android:textAlignment="textEnd"
+            android:textSize="@dimen/team_score_text_size"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="@dimen/line_width"
+            android:layout_height="wrap_content"
+            android:background="@color/colorAccent" />
+
+        <TextView
+            android:id="@+id/teamB_score"
+            android:layout_width="@dimen/zero_for_layout_weight"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="@dimen/team_score_text_padding"
+            android:text="@string/team_score_B"
+            android:textAlignment="textStart"
+            android:textSize="@dimen/team_score_text_size"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/teamB"
+            android:layout_width="@dimen/zero_for_layout_weight"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="sans-serif-smallcaps"
+            android:text="@string/team_name_B"
+            android:textColor="@color/teamB"
+            android:textAlignment="textEnd"
+            android:textSize="@dimen/team_name_text_size" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/game_room"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/zero_for_layout_weight"
+        android:layout_weight="1"
+        android:padding="@dimen/gameroom_padding">
+
+        <!-- Tisch in der Mitte des Bildschirms
+        *     4 Spieler sitzen im Uhrzeigersinn um den Tisch herum:
+        *       Spieler 1 ist links oben
+        *       Spieler 2 ist rechts oben
+        *       Spieler 3 ist rechts unten
+        *       Spieler 4 ist links unten
+        -->
+        <com.makeramen.roundedimageview.RoundedImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/game_table"
+            android:layout_width="@dimen/table_image_size"
+            android:layout_height="@dimen/table_image_size"
+            android:layout_centerInParent="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/tisch_bg"
+            app:riv_border_color="@color/table_border"
+            app:riv_border_width="@dimen/table_border_width"
+            app:riv_oval="true" />
+
+        <com.makeramen.roundedimageview.RoundedImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/player1_image"
+            android:src="@drawable/ic_happy"
+            style="@style/PlayerImageStyle"
+            app:riv_border_color="@color/teamA"
+            app:riv_border_width="@dimen/player_image_border_width"
+            app:riv_mutate_background="true"
+            app:riv_oval="true"/>
+
+        <TextView
+            android:id="@+id/player1_name"
+            android:layout_below="@id/player1_image"
+            android:text="@string/player_1"
+            style="@style/PlayerNameStyle"/>
+
+        <com.makeramen.roundedimageview.RoundedImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/player2_image"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_baby"
+            style="@style/PlayerImageStyle"
+            app:riv_border_color="@color/teamB"
+            app:riv_border_width="@dimen/player_image_border_width"
+            app:riv_mutate_background="true"
+            app:riv_oval="true"/>
+
+        <TextView
+            android:id="@+id/player2_name"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/player2_image"
+            android:text="@string/player_2"
+            style="@style/PlayerNameStyle"/>
+
+        <com.makeramen.roundedimageview.RoundedImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/player3_image"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            style="@style/PlayerImageStyle"
+            android:src="@drawable/ic_scared"
+            app:riv_border_color="@color/teamA"
+            app:riv_border_width="@dimen/player_image_border_width"
+            app:riv_mutate_background="true"
+            app:riv_oval="true" />
+
+        <TextView
+            android:id="@+id/player3_name"
+            android:layout_above="@id/player3_image"
+            android:layout_alignParentEnd="true"
+            android:text="@string/player_3"
+            style="@style/PlayerNameStyle"/>
+
+        <com.makeramen.roundedimageview.RoundedImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/player4_image"
+            android:layout_alignParentBottom="true"
+            style="@style/PlayerImageStyle"
+            android:src="@drawable/ic_hipster"
+            app:riv_border_color="@color/teamB"
+            app:riv_border_width="@dimen/player_image_border_width"
+            app:riv_mutate_background="true"
+            app:riv_oval="true" />
+
+        <TextView
+            android:id="@+id/player4_name"
+            android:layout_above="@id/player4_image"
+            android:text="@string/player_4"
+            style="@style/PlayerNameStyle" />
+    </RelativeLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:text="@string/btn_finish_Round"
+        android:onClick="finishRound"/>
+
+</LinearLayout>
