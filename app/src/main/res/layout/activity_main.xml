@@ -146,7 +146,7 @@
             android:id="@+id/player4_image"
             style="@style/PlayerImageStyle"
             android:layout_alignParentBottom="true"
-            android:src="@drawable/ic_hipster"
+            android:src="@drawable/ic_nerd"
             app:riv_border_color="@color/teamB"
             app:riv_border_width="@dimen/player_image_border_width"
             app:riv_mutate_background="true"
