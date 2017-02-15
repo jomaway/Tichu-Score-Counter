@@ -6,10 +6,9 @@
 
     <item
         android:id="@+id/menu_newGame"
-        android:icon="@drawable/ic_check_24dp"
         android:orderInCategory="100"
         android:title="@string/menu_new_game"
-        app:showAsAction="always" />
+        app:showAsAction="never" />
     <item
         android:id="@+id/menu_setPlayers"
         android:orderInCategory="200"

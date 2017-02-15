@@ -6,10 +6,10 @@
     <string name="team_score_A">0</string>
     <string name="team_score_B">0</string>
 
-    <string name="player_1">Jonas</string>
-    <string name="player_2">Anja</string>
-    <string name="player_3">Lena</string>
-    <string name="player_4">Christian</string>
+    <string name="player_1">Player 1</string>
+    <string name="player_2">Player 2</string>
+    <string name="player_3">Player 3</string>
+    <string name="player_4">Player 4</string>
 
     <string name="btn_tichu">T</string>
     <string name="btn_great_tichu">GT</string>

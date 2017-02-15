@@ -24,8 +24,13 @@ public class MainActivity extends AppCompatActivity {
     private static final int PLAYER_ACTIONBAR_PLAYER_TAG = 33;
     private static final int ROUND_POINT_REQUEST = 968;
     private static final int SET_PLAYERS_REQUEST = 250;
-    private static final String TEAM_A_GAMESCORE = "gamescoreTeamA";
-    private static final String TEAM_B_GAMESCORE = "gamescoreTeamB";
+    private static final String TEAM_A_GAMESCORE = "pref_gamescoreTeamA";
+    private static final String TEAM_B_GAMESCORE = "pref_gamescoreTeamB";
+    private static final String PLAYER1_NAME = "pref_player1name";
+    private static final String PLAYER2_NAME = "pref_player2name";
+    private static final String PLAYER3_NAME = "pref_player3name";
+    private static final String PLAYER4_NAME = "pref_player4name";
+
 
     // MARK: Model
     // Views
@@ -89,6 +94,10 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.menu_setPlayers:
                 Intent intent = new Intent(this, SetPlayersActivity.class);
+                intent.putExtra(SetPlayersActivity.EXTRA_PLAYER1,player1_name);
+                intent.putExtra(SetPlayersActivity.EXTRA_PLAYER2,player2_name);
+                intent.putExtra(SetPlayersActivity.EXTRA_PLAYER3,player3_name);
+                intent.putExtra(SetPlayersActivity.EXTRA_PLAYER4,player4_name);
                 startActivityForResult(intent, SET_PLAYERS_REQUEST);
                 return true;
             default:
@@ -193,19 +202,32 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG,"total score saved");
         SharedPreferences gamescore = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor editor = gamescore.edit();
+        //save score
         editor.putInt(TEAM_A_GAMESCORE, totalScore_TeamA);
         editor.putInt(TEAM_B_GAMESCORE, totalScore_TeamB);
-
+        // save Player names
+        editor.putString(PLAYER1_NAME, player1_name);
+        editor.putString(PLAYER2_NAME, player2_name);
+        editor.putString(PLAYER3_NAME, player3_name);
+        editor.putString(PLAYER4_NAME, player4_name);
         // Commit the edits
         editor.commit();
     }
     private void loadGame() {
         Log.i(TAG,"previous score loaded");
+        // Set SharedPreferences
         SharedPreferences gamescore = getPreferences(MODE_PRIVATE);
+        //load score
         totalScore_TeamA = gamescore.getInt(TEAM_A_GAMESCORE,0);
         totalScore_TeamB = gamescore.getInt(TEAM_B_GAMESCORE,0);
+        // load players
+        player1_name = gamescore.getString(PLAYER1_NAME, String.valueOf(R.string.player_1));
+        player2_name = gamescore.getString(PLAYER2_NAME,String.valueOf(R.string.player_2));
+        player3_name = gamescore.getString(PLAYER3_NAME, String.valueOf(R.string.player_3));
+        player4_name = gamescore.getString(PLAYER4_NAME,String.valueOf(R.string.player_4));
         // Update the screen and set a toast to notify the user
         updateTotalScore();
+        updatePlayerNames();
         Toast.makeText(this, R.string.toast_load_game,Toast.LENGTH_SHORT).show();
     }
 
@@ -225,6 +247,7 @@ public class MainActivity extends AppCompatActivity {
         player2.setText(player2_name);
         player3.setText(player3_name);
         player4.setText(player4_name);
+        saveGame();
     }
 
     // MARK: Methods that get called by User interaction

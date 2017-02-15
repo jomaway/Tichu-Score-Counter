@@ -7,6 +7,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import static android.R.attr.data;
+import static de.jomaway.tichuscorecounter.R.id.player1_name;
+import static de.jomaway.tichuscorecounter.R.id.player2_name;
+import static de.jomaway.tichuscorecounter.R.id.player3_name;
+import static de.jomaway.tichuscorecounter.R.id.player4_name;
 import static de.jomaway.tichuscorecounter.SetRoundPointsActivity.EXTRA_TEAM_A_SCORE;
 import static de.jomaway.tichuscorecounter.SetRoundPointsActivity.EXTRA_TEAM_B_SCORE;
 
@@ -33,6 +38,12 @@ public class SetPlayersActivity extends AppCompatActivity {
         player2 = (EditText) findViewById(R.id.player2_edit);
         player3 = (EditText) findViewById(R.id.player3_edit);
         player4 = (EditText) findViewById(R.id.player4_edit);
+
+        Intent intent = getIntent();
+        player1.setText(intent.getStringExtra(EXTRA_PLAYER1));
+        player2.setText(intent.getStringExtra(EXTRA_PLAYER2));
+        player3.setText(intent.getStringExtra(EXTRA_PLAYER3));
+        player4.setText(intent.getStringExtra(EXTRA_PLAYER4));
     }
 
     public void done(View view){
