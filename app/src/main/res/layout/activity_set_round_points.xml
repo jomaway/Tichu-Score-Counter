@@ -12,7 +12,7 @@
     tools:context="de.jomaway.tichuscorecounter.SetRoundPointsActivity">
 
     <LinearLayout
-        android:layout_width="@dimen/zero_for_layout_weight"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical">
@@ -31,33 +31,33 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:descendantFocusability="blocksDescendants"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="@dimen/np_margin_bottom"/>
 
         <CheckBox
             android:id="@+id/teamA_wonT"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="won Tichu" />
+            android:text="@string/cb_won_tichu" />
         <CheckBox
             android:id="@+id/teamA_lostT"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="lost Tichu" />
+            android:text="@string/cb_lost_tichu" />
         <CheckBox
             android:id="@+id/teamA_wonGT"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="won GreatTichu" />
+            android:text="@string/cb_won_great_tichu" />
         <CheckBox
             android:id="@+id/teamA_lostGT"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="lost GreatTichu" />
+            android:text="@string/cb_lost_great_tichu" />
         <CheckBox
             android:id="@+id/teamA_out12"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="out first and second" />
+            android:text="@string/cb_out12" />
 
     </LinearLayout>
 
@@ -67,7 +67,7 @@
         android:background="@color/colorAccent"/>
 
     <LinearLayout
-        android:layout_width="@dimen/zero_for_layout_weight"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical">
@@ -85,33 +85,33 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:descendantFocusability="blocksDescendants"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="@dimen/np_margin_bottom"/>
 
         <CheckBox
             android:id="@+id/teamB_wonT"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="won Tichu"/>
+            android:text="@string/cb_won_tichu"/>
         <CheckBox
             android:id="@+id/teamB_lostT"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="lost Tichu" />
+            android:text="@string/cb_lost_tichu" />
         <CheckBox
             android:id="@+id/teamB_wonGT"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="won GreatTichu" />
+            android:text="@string/cb_won_great_tichu" />
         <CheckBox
             android:id="@+id/teamB_lostGT"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="lost GreatTichu" />
+            android:text="@string/cb_lost_great_tichu" />
         <CheckBox
             android:id="@+id/teamB_out12"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="out first and second" />
+            android:text="@string/cb_out12" />
 
         <Button
             android:layout_width="wrap_content"

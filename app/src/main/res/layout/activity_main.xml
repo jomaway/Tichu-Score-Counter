@@ -70,7 +70,7 @@
     <RelativeLayout
         android:id="@+id/game_room"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/zero_for_layout_weight"
+        android:layout_height="0dp"
         android:layout_weight="1"
         android:padding="@dimen/gameroom_padding">
 
@@ -87,10 +87,12 @@
             android:layout_height="@dimen/table_image_size"
             android:layout_centerInParent="true"
             android:scaleType="centerCrop"
-            android:src="@drawable/tisch_bg"
+            android:src="@color/table"
             app:riv_border_color="@color/table_border"
             app:riv_border_width="@dimen/table_border_width"
             app:riv_oval="true" />
+
+
 
         <com.makeramen.roundedimageview.RoundedImageView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/player1_image"
@@ -157,6 +159,16 @@
             style="@style/PlayerNameStyle"
             android:layout_above="@id/player4_image"
             android:text="@string/player_4" />
+
+        <!-- Cards -->
+        <ImageView
+            android:id="@+id/game_cards"
+            android:layout_width="@dimen/game_cards_size"
+            android:layout_height="@dimen/game_cards_size"
+            android:layout_toRightOf="@id/player1_image"
+            android:layout_below="@id/player1_image"
+            android:src="@drawable/cards"
+            android:layout_margin="@dimen/game_cards_margin"/>
     </RelativeLayout>
 
     <Button

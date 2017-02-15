@@ -9,4 +9,5 @@
 
     <color name="player_actionbar_background">#AA333333</color>
     <color name="table_border">#333333</color>
+    <color name="table">#5a8993</color>
 </resources>

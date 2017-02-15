@@ -4,8 +4,9 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="player_image_size">58dp</dimen>
-    <dimen name="table_image_size">200dp</dimen>
+    <dimen name="table_image_size">190dp</dimen>
 
+    <!-- don't use zero_for_layout_weigt for better performance -->
     <dimen name="zero_for_layout_weight">0dp</dimen>
     <dimen name="line_width">1dp</dimen>
 
@@ -17,6 +18,9 @@
     <dimen name="table_border_width">2dp</dimen>
     <dimen name="player_image_border_width">2dp</dimen>
 
+    <dimen name="game_cards_size">40dp</dimen>
+    <dimen name="game_cards_margin">15dp</dimen>
+
     <dimen name="teambar_margin_bottom">16dp</dimen>
     <dimen name="team_name_text_size">22sp</dimen>
     <dimen name="team_score_text_size">28sp</dimen>
@@ -24,4 +28,6 @@
 
     <dimen name="player_edit_marginBottom">16dp</dimen>
     <dimen name="player_edit_padding">8dp</dimen>
+
+    <dimen name="np_margin_bottom">16dp</dimen>
 </resources>

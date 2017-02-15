@@ -17,6 +17,12 @@
     <string name="btn_finish_Round">Runde beenden</string>
     <string name="btn_done">Fertig</string>
 
+    <string name="cb_won_tichu">won Tichu</string>
+    <string name="cb_lost_tichu">lost Tichu</string>
+    <string name="cb_won_great_tichu">won Great Tichu</string>
+    <string name="cb_lost_great_tichu">lost Great Tichu</string>
+    <string name="cb_out12">out first and second</string>
+
     <string name="menu_new_game">New Game</string>
     <string name="menu_set_players">Set Players</string>
     <string name="menu_settings">Settings</string>

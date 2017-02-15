@@ -11,12 +11,15 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.zip.Inflater;
 
 import static android.R.attr.data;
+import static android.R.attr.switchMinWidth;
 
 public class MainActivity extends AppCompatActivity {
     // Constants
@@ -26,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int SET_PLAYERS_REQUEST = 250;
     private static final String TEAM_A_GAMESCORE = "pref_gamescoreTeamA";
     private static final String TEAM_B_GAMESCORE = "pref_gamescoreTeamB";
+    private static final String GAME_ROUNDS = "pref_gameRounds";
     private static final String PLAYER1_NAME = "pref_player1name";
     private static final String PLAYER2_NAME = "pref_player2name";
     private static final String PLAYER3_NAME = "pref_player3name";
@@ -46,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
     String player2_name;
     String player3_name;
     String player4_name;
+
+    int rounds = 0;
 
     // Score Variables
     int totalScore_TeamA;
@@ -113,10 +119,12 @@ public class MainActivity extends AppCompatActivity {
             switch (resultCode) {
                 case RESULT_OK:
                     if (requestCode == ROUND_POINT_REQUEST) {
+                        rounds ++;
                         int roundScoreTeamA = data.getIntExtra(SetRoundPointsActivity.EXTRA_TEAM_A_SCORE, 0);
                         int roundScoreTeamB = data.getIntExtra(SetRoundPointsActivity.EXTRA_TEAM_B_SCORE, 0);
                         addPoints(roundScoreTeamA, roundScoreTeamB);
                         updateTotalScore();
+                        passCardsToNextShuffler();
                     } else if (requestCode == SET_PLAYERS_REQUEST) {
                         player1_name = data.getStringExtra(SetPlayersActivity.EXTRA_PLAYER1);
                         player2_name = data.getStringExtra(SetPlayersActivity.EXTRA_PLAYER2);
@@ -193,8 +201,10 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG,"new Game started");
         totalScore_TeamA = 0;
         totalScore_TeamB = 0;
+        rounds = 0;
 
         updateTotalScore();
+        passCardsToNextShuffler();
         Toast.makeText(this, R.string.toast_new_game,Toast.LENGTH_SHORT).show();
     }
 
@@ -205,6 +215,7 @@ public class MainActivity extends AppCompatActivity {
         //save score
         editor.putInt(TEAM_A_GAMESCORE, totalScore_TeamA);
         editor.putInt(TEAM_B_GAMESCORE, totalScore_TeamB);
+        editor.putInt(GAME_ROUNDS,rounds);
         // save Player names
         editor.putString(PLAYER1_NAME, player1_name);
         editor.putString(PLAYER2_NAME, player2_name);
@@ -220,6 +231,7 @@ public class MainActivity extends AppCompatActivity {
         //load score
         totalScore_TeamA = gamescore.getInt(TEAM_A_GAMESCORE,0);
         totalScore_TeamB = gamescore.getInt(TEAM_B_GAMESCORE,0);
+        rounds = gamescore.getInt(GAME_ROUNDS,0);
         // load players
         player1_name = gamescore.getString(PLAYER1_NAME, String.valueOf(R.string.player_1));
         player2_name = gamescore.getString(PLAYER2_NAME,String.valueOf(R.string.player_2));
@@ -228,6 +240,7 @@ public class MainActivity extends AppCompatActivity {
         // Update the screen and set a toast to notify the user
         updateTotalScore();
         updatePlayerNames();
+        passCardsToNextShuffler();
         Toast.makeText(this, R.string.toast_load_game,Toast.LENGTH_SHORT).show();
     }
 
@@ -265,7 +278,29 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
+    private void passCardsToNextShuffler() {
+        ImageView cards = (ImageView) findViewById(R.id.game_cards);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(cards.getLayoutParams());
+        switch (rounds%4) {
+            case 0:
+                params.addRule(RelativeLayout.RIGHT_OF, R.id.player1_image);
+                params.addRule(RelativeLayout.BELOW,R.id.player1_image);
+                break;
+            case 1:
+                params.addRule(RelativeLayout.LEFT_OF, R.id.player2_image);
+                params.addRule(RelativeLayout.BELOW,R.id.player2_image);
+                break;
+            case 2:
+                params.addRule(RelativeLayout.LEFT_OF, R.id.player3_image);
+                params.addRule(RelativeLayout.ABOVE,R.id.player3_image);
+                break;
+            case 3:
+                params.addRule(RelativeLayout.RIGHT_OF, R.id.player4_image);
+                params.addRule(RelativeLayout.ABOVE,R.id.player4_image);
+                break;
+        }
+        cards.setLayoutParams(params);
+    }
 
 
     /*
