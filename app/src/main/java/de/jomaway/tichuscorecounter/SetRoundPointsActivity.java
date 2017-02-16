@@ -5,12 +5,16 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.util.Log;
 import android.util.Pair;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.NumberPicker;
+
+import java.lang.reflect.Field;
 
 import static android.R.attr.id;
 import static android.R.attr.value;
@@ -65,8 +69,8 @@ public class SetRoundPointsActivity extends AppCompatActivity {
         numberPickerTeamB = (NumberPicker) findViewById(R.id.teamB_numberPicker);
 
         // Block Soft Keyboard
-        numberPickerTeamA.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-        numberPickerTeamB.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        //numberPickerTeamA.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        //numberPickerTeamB.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
 
         // Set Team Background Color   - doesn't work is gray
         //numberPickerTeamA.setBackgroundColor(R.color.teamA);
@@ -87,9 +91,6 @@ public class SetRoundPointsActivity extends AppCompatActivity {
             }
         };
 
-        numberPickerTeamA.setFormatter(formatter);
-        numberPickerTeamB.setFormatter(formatter);
-
         // Gets wheter the selector wheel wraps reaching the min/max value
         numberPickerTeamA.setWrapSelectorWheel(false);
         numberPickerTeamB.setWrapSelectorWheel(false);
@@ -97,6 +98,22 @@ public class SetRoundPointsActivity extends AppCompatActivity {
         // Set current Value
         numberPickerTeamA.setValue(15);  // 15 * 5 -25 = 50
         numberPickerTeamB.setValue(15);
+
+        // set Formater to NumberPicker
+        numberPickerTeamA.setFormatter(formatter);
+        numberPickerTeamB.setFormatter(formatter);
+
+        // workaround for NumberPicker bug. -> no default value displayed
+        try {
+            Field f = NumberPicker.class.getDeclaredField("mInputText");
+            f.setAccessible(true);
+            EditText inputText = (EditText) f.get(numberPickerTeamA);
+            inputText.setFilters(new InputFilter[0]);
+            inputText = (EditText) f.get(numberPickerTeamB);
+            inputText.setFilters(new InputFilter[0]);
+        } catch (Exception e) {
+            Log.e(TAG,e.getMessage());
+        }
 
         numberPickerTeamA.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override

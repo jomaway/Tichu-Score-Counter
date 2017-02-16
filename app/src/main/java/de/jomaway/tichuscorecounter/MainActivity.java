@@ -8,10 +8,12 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -233,10 +235,10 @@ public class MainActivity extends AppCompatActivity {
         totalScore_TeamB = gamescore.getInt(TEAM_B_GAMESCORE,0);
         rounds = gamescore.getInt(GAME_ROUNDS,0);
         // load players
-        player1_name = gamescore.getString(PLAYER1_NAME, String.valueOf(R.string.player_1));
-        player2_name = gamescore.getString(PLAYER2_NAME,String.valueOf(R.string.player_2));
-        player3_name = gamescore.getString(PLAYER3_NAME, String.valueOf(R.string.player_3));
-        player4_name = gamescore.getString(PLAYER4_NAME,String.valueOf(R.string.player_4));
+        player1_name = gamescore.getString(PLAYER1_NAME, getString(R.string.player_1));
+        player2_name = gamescore.getString(PLAYER2_NAME,getString(R.string.player_2));
+        player3_name = gamescore.getString(PLAYER3_NAME, getString(R.string.player_3));
+        player4_name = gamescore.getString(PLAYER4_NAME, getString(R.string.player_4));
         // Update the screen and set a toast to notify the user
         updateTotalScore();
         updatePlayerNames();
@@ -301,7 +303,6 @@ public class MainActivity extends AppCompatActivity {
         }
         cards.setLayoutParams(params);
     }
-
 
     /*
     private void showPlayerAction(int playerID){
