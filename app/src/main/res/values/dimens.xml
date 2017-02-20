@@ -6,8 +6,8 @@
     <dimen name="player_image_size">58dp</dimen>
     <dimen name="table_image_size">190dp</dimen>
 
-    <!-- don't use zero_for_layout_weigt for better performance -->
-    <dimen name="zero_for_layout_weight">0dp</dimen>
+    <!-- don't use zero_for_layout_weigt for better performance
+    <dimen name="zero_for_layout_weight">0dp</dimen>  -->
     <dimen name="line_width">1dp</dimen>
 
     <dimen name="player_action_button_size">40dp</dimen>
@@ -15,8 +15,8 @@
     <dimen name="player_actionbar_padding">8dp</dimen>
 
     <dimen name="gameroom_padding">40dp</dimen>
-    <dimen name="table_border_width">2dp</dimen>
-    <dimen name="player_image_border_width">2dp</dimen>
+    <dimen name="table_border_width">1dp</dimen>
+    <dimen name="player_image_border_width">1dp</dimen>
 
     <dimen name="game_cards_size">40dp</dimen>
     <dimen name="game_cards_margin">15dp</dimen>

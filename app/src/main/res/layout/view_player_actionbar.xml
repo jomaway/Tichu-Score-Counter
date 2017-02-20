@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+        <CheckedTextView
+            android:id="@+id/check_great_tichu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/player_action_button_background"
+            android:gravity="center_vertical"
+            android:text="GT"
+            android:textAlignment="center" />
+
+        <CheckedTextView
+            android:id="@+id/check_tichu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/space_between_action_buttons"
+            android:layout_marginRight="@dimen/space_between_action_buttons"
+            android:background="@drawable/player_action_button_background"
+            android:gravity="center_vertical"
+            android:text="T"
+            android:textAlignment="center" />
+
+        <CheckedTextView
+            android:id="@+id/check_out"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/player_action_button_background"
+            android:gravity="center_vertical"
+            android:text="OUT"
+            android:textAlignment="center" />
+
+</merge>

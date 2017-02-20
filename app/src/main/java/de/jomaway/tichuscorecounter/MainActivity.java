@@ -12,6 +12,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckedTextView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -53,7 +54,13 @@ public class MainActivity extends AppCompatActivity {
     String player3_name;
     String player4_name;
 
+    PlayerActionBar playerActionBar1;
+    PlayerActionBar playerActionBar2;
+    PlayerActionBar playerActionBar3;
+    PlayerActionBar playerActionBar4;
+
     int rounds = 0;
+    int out = 0;
 
     // Score Variables
     int totalScore_TeamA;
@@ -72,16 +79,20 @@ public class MainActivity extends AppCompatActivity {
             totalScore_TeamB = savedInstanceState.getInt("TeamB");
         }
 
-
-
         player1 = (TextView) findViewById(R.id.player1_name);
         player2 = (TextView) findViewById(R.id.player2_name);
         player3 = (TextView) findViewById(R.id.player3_name);
         player4 = (TextView) findViewById(R.id.player4_name);
 
+        playerActionBar1 = (PlayerActionBar) findViewById(R.id.player1_actionbar);
+        playerActionBar2 = (PlayerActionBar) findViewById(R.id.player2_actionbar);
+        playerActionBar3 = (PlayerActionBar) findViewById(R.id.player3_actionbar);
+        playerActionBar4 = (PlayerActionBar) findViewById(R.id.player4_actionbar);
+
         teamA_score = (TextView) findViewById(R.id.teamA_score);
         teamB_score = (TextView) findViewById(R.id.teamB_score);
 
+        // load Game
         loadGame();
     }
 
@@ -268,7 +279,53 @@ public class MainActivity extends AppCompatActivity {
     // MARK: Methods that get called by User interaction
     // gets called if you tap on an player
     public void selectedPlayer(View view){
-        //showPlayerAction(view.getId());
+        switch (view.getId()) {
+            case R.id.player1_image:
+                Log.d(TAG,"player 1 action");
+                if (playerActionBar1.getVisibility() == View.GONE) {
+                    hideAllPlayerActionBars();
+                    playerActionBar1.setVisibility(View.VISIBLE);
+                } else {
+                    hideAllPlayerActionBars();
+                }
+                break;
+            case R.id.player2_image:
+                Log.d(TAG,"player 3 action");
+                if (playerActionBar2.getVisibility() == View.GONE) {
+                    hideAllPlayerActionBars();
+                    playerActionBar2.setVisibility(View.VISIBLE);
+                } else {
+                    hideAllPlayerActionBars();
+                }
+                break;
+            case R.id.player3_image:
+                Log.d(TAG,"player 3 action");
+                if (playerActionBar3.getVisibility() == View.GONE) {
+                    hideAllPlayerActionBars();
+                    playerActionBar3.setVisibility(View.VISIBLE);
+                } else {
+                    hideAllPlayerActionBars();
+                }
+                break;
+            case R.id.player4_image:
+                Log.d(TAG,"player 4 action");
+                if (playerActionBar4.getVisibility() == View.GONE) {
+                    hideAllPlayerActionBars();
+                    playerActionBar4.setVisibility(View.VISIBLE);
+                } else {
+                    hideAllPlayerActionBars();
+                }
+                break;
+            default:
+                hideAllPlayerActionBars();
+                return;
+        }
+    }
+    private void hideAllPlayerActionBars(){
+        playerActionBar1.setVisibility(View.GONE);
+        playerActionBar2.setVisibility(View.GONE);
+        playerActionBar3.setVisibility(View.GONE);
+        playerActionBar4.setVisibility(View.GONE);
     }
 
     // finish the Round an start an new Activity for the Round Point Result
@@ -303,41 +360,4 @@ public class MainActivity extends AppCompatActivity {
         }
         cards.setLayoutParams(params);
     }
-
-    /*
-    private void showPlayerAction(int playerID){
-        LinearLayout playerActionBar = (LinearLayout) findViewById(R.id.player_actionbar);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(playerActionBar.getLayoutParams());
-        switch (playerID){
-            case (R.id.player1_image):
-                params.addRule(RelativeLayout.BELOW, R.id.player1_name);
-                playerActionBar.setGravity(Gravity.LEFT);
-                break;
-            case (R.id.player2_image):
-                params.addRule(RelativeLayout.BELOW, R.id.player2_name);
-                playerActionBar.setGravity(Gravity.RIGHT);
-                break;
-            case (R.id.player3_image):
-                params.addRule(RelativeLayout.ABOVE, R.id.player3_name);
-                playerActionBar.setGravity(Gravity.RIGHT);
-                break;
-            case (R.id.player4_image):
-                params.addRule(RelativeLayout.ABOVE, R.id.player4_name);
-                playerActionBar.setGravity(Gravity.LEFT);
-                break;
-            default:
-                Log.e(TAG,"Not an valid Player ID");
-                return;
-        }
-        playerActionBar.setTag(PLAYER_ACTIONBAR_PLAYER_TAG);
-        playerActionBar.setLayoutParams(params);
-        playerActionBar.setVisibility(View.VISIBLE);
-    }
-
-    // hide the Player Action Bar
-    private void hidePlayerAction(){
-        LinearLayout playerAction = (LinearLayout) findViewById(R.id.player_actionbar);
-        playerAction.setVisibility(View.GONE);
-    }
-    */
 }

@@ -21,4 +21,14 @@
         <item name="android:textAlignment">center</item>
     </style>
 
+    <style name="PlayerActionBarStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">4dp</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:background">@drawable/player_actionbar_background</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:visibility">gone</item>
+    </style>
+
 </resources>

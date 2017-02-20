@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
@@ -20,7 +21,7 @@
 
         <TextView
             android:id="@+id/teamA"
-            android:layout_width="@dimen/zero_for_layout_weight"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:fontFamily="sans-serif-smallcaps"
@@ -30,7 +31,7 @@
 
         <TextView
             android:id="@+id/teamA_score"
-            android:layout_width="@dimen/zero_for_layout_weight"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:padding="@dimen/team_score_text_padding"
@@ -46,7 +47,7 @@
 
         <TextView
             android:id="@+id/teamB_score"
-            android:layout_width="@dimen/zero_for_layout_weight"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:padding="@dimen/team_score_text_padding"
@@ -57,7 +58,7 @@
 
         <TextView
             android:id="@+id/teamB"
-            android:layout_width="@dimen/zero_for_layout_weight"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:fontFamily="sans-serif-smallcaps"
@@ -87,11 +88,10 @@
             android:layout_height="@dimen/table_image_size"
             android:layout_centerInParent="true"
             android:scaleType="centerCrop"
-            android:src="@color/table"
+            android:src="@drawable/tisch_bg"
             app:riv_border_color="@color/table_border"
             app:riv_border_width="@dimen/table_border_width"
             app:riv_oval="true" />
-
 
 
         <com.makeramen.roundedimageview.RoundedImageView xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -148,7 +148,7 @@
             android:id="@+id/player4_image"
             style="@style/PlayerImageStyle"
             android:layout_alignParentBottom="true"
-            android:src="@drawable/ic_nerd"
+            android:src="@drawable/man"
             app:riv_border_color="@color/teamB"
             app:riv_border_width="@dimen/player_image_border_width"
             app:riv_mutate_background="true"
@@ -165,10 +165,35 @@
             android:id="@+id/game_cards"
             android:layout_width="@dimen/game_cards_size"
             android:layout_height="@dimen/game_cards_size"
-            android:layout_toRightOf="@id/player1_image"
             android:layout_below="@id/player1_image"
-            android:src="@drawable/cards"
-            android:layout_margin="@dimen/game_cards_margin"/>
+            android:layout_margin="@dimen/game_cards_margin"
+            android:layout_toRightOf="@id/player1_image"
+            android:src="@drawable/cards3" />
+
+        <!-- Player ActionBars -->
+        <de.jomaway.tichuscorecounter.PlayerActionBar
+            android:id="@+id/player1_actionbar"
+            style="@style/PlayerActionBarStyle"
+            android:layout_below="@id/player1_image" />
+
+        <de.jomaway.tichuscorecounter.PlayerActionBar
+            android:id="@+id/player2_actionbar"
+            style="@style/PlayerActionBarStyle"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/player2_image"/>
+
+        <de.jomaway.tichuscorecounter.PlayerActionBar
+            android:id="@+id/player3_actionbar"
+            style="@style/PlayerActionBarStyle"
+            android:layout_above="@id/player3_image"
+            android:layout_alignParentEnd="true" />
+
+        <de.jomaway.tichuscorecounter.PlayerActionBar
+            android:id="@+id/player4_actionbar"
+            style="@style/PlayerActionBarStyle"
+            android:layout_above="@id/player4_image"/>
+
+
     </RelativeLayout>
 
     <Button

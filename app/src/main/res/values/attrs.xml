@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="PlayerActionBar">
+        <attr name="bindToPlayer" format="enum">
+            <enum name="player1" value="0"/>
+            <enum name="player2" value="1"/>
+            <enum name="player3" value="2"/>
+            <enum name="player4" value="3"/>
+        </attr>
+    </declare-styleable>
+</resources>
