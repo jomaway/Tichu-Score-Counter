@@ -43,7 +43,7 @@
         <View
             android:layout_width="@dimen/line_width"
             android:layout_height="wrap_content"
-            android:background="@color/colorAccent" />
+            android:background="@color/line" />
 
         <TextView
             android:id="@+id/teamB_score"
@@ -196,11 +196,13 @@
 
     </RelativeLayout>
 
+    <!--
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         android:onClick="finishRound"
         android:text="@string/btn_finish_Round" />
+        -->
 
 </LinearLayout>

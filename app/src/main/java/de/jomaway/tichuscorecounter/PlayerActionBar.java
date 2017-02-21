@@ -1,21 +1,13 @@
 package de.jomaway.tichuscorecounter;
 
 import android.content.Context;
-import android.content.res.TypedArray;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Checkable;
 import android.widget.CheckedTextView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
-import static android.os.Build.VERSION_CODES.M;
-import static de.jomaway.tichuscorecounter.R.drawable.cards;
 
 
 /**
@@ -25,10 +17,15 @@ import static de.jomaway.tichuscorecounter.R.drawable.cards;
 public class PlayerActionBar extends LinearLayout {
     private static final String TAG = "PlayerActionBar";
 
-    private int mBindToPlayer;
+    private Players mBindToPlayer;
     private CheckedTextView mTichu;
     private CheckedTextView mGreatTichu;
     private CheckedTextView mOut;
+
+    private boolean isOut = false;
+    private int position = 0;
+
+    PlayerOutCallback playerOutCallback;
 
     public PlayerActionBar(Context context) {
         this(context, null);
@@ -69,7 +66,7 @@ public class PlayerActionBar extends LinearLayout {
 
     // Toogle the CheckedTextView
     // returns the new state as boolean
-    private boolean toogleChecked(Checkable view){
+    public boolean toogleChecked(Checkable view){
             if ( view.isChecked()){
                 view.setChecked(false);
                 return false;
@@ -83,28 +80,104 @@ public class PlayerActionBar extends LinearLayout {
         mTichu.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG,"Tichu");
-                toogleChecked(mTichu);
+                if (!isOut) {
+                    Log.d(TAG,"Tichu");
+                    if(!mGreatTichu.isChecked()){
+                        toogleChecked(mTichu);
+                    }
+                }
             }
         });
         mGreatTichu.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG," Great Tichu");
-                toogleChecked(mGreatTichu);
+                if (!isOut) {
+                    Log.d(TAG," Great Tichu");
+                    if (!mTichu.isChecked()) {
+                        toogleChecked(mGreatTichu);
+                    }
+                }
             }
         });
         mOut.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "player out");
-                if (toogleChecked(mOut)) {
-                    mOut.setText("1");
-                } else {
-                    mOut.setText(getResources().getString(R.string.btn_player_out));
+                if (!isOut) {
+                    Log.d(TAG, "player out");
+                    if (toogleChecked(mOut)) {
+                        // First increment because it starts with 0
+                        position = MainActivity.getPlayersOut();
+                        mOut.setText(String.valueOf(position));
+                        isOut = true;
+                        if (playerOutCallback != null) {
+                            playerOutCallback.playerOut(mBindToPlayer);
+                        }
+                    } else {
+                        mOut.setText(getResources().getString(R.string.btn_player_out));
+                    }
                 }
+
             }
         });
+    }
+
+    public void reset() {
+        isOut = false;
+        mOut.setChecked(false);
+        mTichu.setChecked(false);
+        mGreatTichu.setChecked(false);
+        mOut.setText(getResources().getString(R.string.btn_player_out));
+    }
+
+    public void setPlayerOutCallback(PlayerOutCallback callback, Players player) {
+        playerOutCallback = callback;
+        mBindToPlayer = player;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+    public boolean isFirst() {
+        if (position == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public boolean saidTichu() {
+        return mTichu.isChecked();
+    }
+
+    public boolean saidGreatTichu() {
+        return mGreatTichu.isChecked();
+    }
+
+    public void redoPlayerOut() {
+        mOut.setChecked(false);
+        mOut.setText(getResources().getString(R.string.btn_player_out));
+        isOut = false;
+        position = 0;
+    }
+
+    public int getTichuScore() {
+        if (saidTichu()){
+            if (isFirst()) {
+                return 100;
+            } else {
+                return -100;
+            }
+        } else if (saidGreatTichu()) {
+            if (isFirst()) {
+                return 200;
+            } else {
+                return -200;
+            }
+        }
+        return 0;
+    }
+
+    public boolean getIsOut() {
+        return isOut;
     }
 
 }

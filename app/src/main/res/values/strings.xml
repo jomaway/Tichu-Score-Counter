@@ -29,4 +29,7 @@
 
     <string name="toast_new_game">New Game started</string>
     <string name="toast_load_game">Score loaded</string>
+
+    <string name="snack_player">Player</string>
+    <string name="snack_out">out</string>
 </resources>

@@ -1,30 +1,24 @@
 package de.jomaway.tichuscorecounter;
 
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CheckedTextView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.util.ArrayList;
+import java.util.List;
 
-import java.util.zip.Inflater;
-
-import static android.R.attr.data;
-import static android.R.attr.switchMinWidth;
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements PlayerOutCallback {
     // Constants
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int PLAYER_ACTIONBAR_PLAYER_TAG = 33;
@@ -37,6 +31,17 @@ public class MainActivity extends AppCompatActivity {
     private static final String PLAYER2_NAME = "pref_player2name";
     private static final String PLAYER3_NAME = "pref_player3name";
     private static final String PLAYER4_NAME = "pref_player4name";
+
+    private static int mPlayersOut = 0;
+
+    public static int getPlayersOut() {
+        setPlayersOut();
+        return mPlayersOut;
+    }
+
+    public static void setPlayersOut() {
+        MainActivity.mPlayersOut++;
+    }
 
 
     // MARK: Model
@@ -60,11 +65,15 @@ public class MainActivity extends AppCompatActivity {
     PlayerActionBar playerActionBar4;
 
     int rounds = 0;
-    int out = 0;
 
     // Score Variables
     int totalScore_TeamA;
     int totalScore_TeamB;
+
+    int roundScore_TeamA;
+    int roundScore_TeamB;
+
+    List<Players> outOrder = new ArrayList<Players>();
 
     // MARK: App Lifecycle Methods
     @Override
@@ -73,8 +82,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        if(savedInstanceState != null) {
-            Log.d(TAG,"load saveInstanceState ");
+        if (savedInstanceState != null) {
+            Log.d(TAG, "load saveInstanceState ");
             totalScore_TeamA = savedInstanceState.getInt("TeamA");
             totalScore_TeamB = savedInstanceState.getInt("TeamB");
         }
@@ -91,6 +100,12 @@ public class MainActivity extends AppCompatActivity {
 
         teamA_score = (TextView) findViewById(R.id.teamA_score);
         teamB_score = (TextView) findViewById(R.id.teamB_score);
+
+        playerActionBar1.setPlayerOutCallback(this, Players.P1);
+        playerActionBar2.setPlayerOutCallback(this, Players.P2);
+        playerActionBar3.setPlayerOutCallback(this, Players.P3);
+        playerActionBar4.setPlayerOutCallback(this, Players.P4);
+
 
         // load Game
         loadGame();
@@ -113,10 +128,10 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.menu_setPlayers:
                 Intent intent = new Intent(this, SetPlayersActivity.class);
-                intent.putExtra(SetPlayersActivity.EXTRA_PLAYER1,player1_name);
-                intent.putExtra(SetPlayersActivity.EXTRA_PLAYER2,player2_name);
-                intent.putExtra(SetPlayersActivity.EXTRA_PLAYER3,player3_name);
-                intent.putExtra(SetPlayersActivity.EXTRA_PLAYER4,player4_name);
+                intent.putExtra(SetPlayersActivity.EXTRA_PLAYER1, player1_name);
+                intent.putExtra(SetPlayersActivity.EXTRA_PLAYER2, player2_name);
+                intent.putExtra(SetPlayersActivity.EXTRA_PLAYER3, player3_name);
+                intent.putExtra(SetPlayersActivity.EXTRA_PLAYER4, player4_name);
                 startActivityForResult(intent, SET_PLAYERS_REQUEST);
                 return true;
             default:
@@ -129,28 +144,27 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         // Check for the right Result
-            switch (resultCode) {
-                case RESULT_OK:
-                    if (requestCode == ROUND_POINT_REQUEST) {
-                        rounds ++;
-                        int roundScoreTeamA = data.getIntExtra(SetRoundPointsActivity.EXTRA_TEAM_A_SCORE, 0);
-                        int roundScoreTeamB = data.getIntExtra(SetRoundPointsActivity.EXTRA_TEAM_B_SCORE, 0);
-                        addPoints(roundScoreTeamA, roundScoreTeamB);
-                        updateTotalScore();
-                        passCardsToNextShuffler();
-                    } else if (requestCode == SET_PLAYERS_REQUEST) {
-                        player1_name = data.getStringExtra(SetPlayersActivity.EXTRA_PLAYER1);
-                        player2_name = data.getStringExtra(SetPlayersActivity.EXTRA_PLAYER2);
-                        player3_name = data.getStringExtra(SetPlayersActivity.EXTRA_PLAYER3);
-                        player4_name = data.getStringExtra(SetPlayersActivity.EXTRA_PLAYER4);
-                        updatePlayerNames();
-                    }
-                    break;
-                case RESULT_CANCELED:
-                    break;
-                default:
-                    break;
-            }
+        switch (resultCode) {
+            case RESULT_OK:
+                if (requestCode == ROUND_POINT_REQUEST) {
+                    int roundScoreTeamA = data.getIntExtra(SetRoundPointsActivity.EXTRA_TEAM_A_SCORE, 0);
+                    int roundScoreTeamB = data.getIntExtra(SetRoundPointsActivity.EXTRA_TEAM_B_SCORE, 0);
+                    addPoints(roundScoreTeamA, roundScoreTeamB);
+                    // start new Round
+                    newRound();
+                } else if (requestCode == SET_PLAYERS_REQUEST) {
+                    player1_name = data.getStringExtra(SetPlayersActivity.EXTRA_PLAYER1);
+                    player2_name = data.getStringExtra(SetPlayersActivity.EXTRA_PLAYER2);
+                    player3_name = data.getStringExtra(SetPlayersActivity.EXTRA_PLAYER3);
+                    player4_name = data.getStringExtra(SetPlayersActivity.EXTRA_PLAYER4);
+                    updatePlayerNames();
+                }
+                break;
+            case RESULT_CANCELED:
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
@@ -162,9 +176,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
-        savedInstanceState.putInt("TeamA",totalScore_TeamA);
-        savedInstanceState.putInt("TeamB",totalScore_TeamB);
+        savedInstanceState.putInt("TeamA", totalScore_TeamA);
+        savedInstanceState.putInt("TeamB", totalScore_TeamB);
     }
+
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
@@ -175,6 +190,35 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // MARK: game Methods
+
+    // new Round
+    private void newRound() {
+        totalScore_TeamA += roundScore_TeamA;
+        totalScore_TeamB += roundScore_TeamB;
+        mPlayersOut = 0;
+        outOrder.clear();
+        roundScore_TeamA = 0;
+        roundScore_TeamB = 0;
+        rounds++;
+        resetActionBars();
+        updateTotalScore();
+        passCardsToNextShuffler();
+        hideAllPlayerActionBars();
+
+        Log.d(TAG,"P1AB: isOut:" + String.valueOf(playerActionBar1.getIsOut()));
+        Log.d(TAG,"P2AB: isOut:" + String.valueOf(playerActionBar2.getIsOut()));
+        Log.d(TAG,"P3AB: isOut:" + String.valueOf(playerActionBar3.getIsOut()));
+        Log.d(TAG,"P4AB: isOut:" + String.valueOf(playerActionBar4.getIsOut()));
+    }
+
+    // Reset all Actionbars bevor a new Round
+    private void resetActionBars() {
+        playerActionBar1.reset();
+        playerActionBar2.reset();
+        playerActionBar3.reset();
+        playerActionBar4.reset();
+    }
+
     // Add Points to the total Score of both Teams
     private void addPoints(int teamA_Points, int teamB_Points) {
         totalScore_TeamA += teamA_Points;
@@ -184,11 +228,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean checkForWinner() {
-        if (totalScore_TeamA >= 1000){
+        if (totalScore_TeamA >= 1000) {
             wonGame("TeamA");
             return true;
 
-        } if (totalScore_TeamB >= 1000) {
+        }
+        if (totalScore_TeamB >= 1000) {
             wonGame("TeamB");
             return true;
         }
@@ -205,30 +250,29 @@ public class MainActivity extends AppCompatActivity {
                         newGame();
                     }
                 })
-                .setNegativeButton("no",null);
+                .setNegativeButton("no", null);
         AlertDialog dialog = builder.create();
         dialog.show();
     }
 
     private void newGame() {
-        Log.i(TAG,"new Game started");
+        Log.i(TAG, "new Game started");
         totalScore_TeamA = 0;
         totalScore_TeamB = 0;
-        rounds = 0;
-
+        newRound();
         updateTotalScore();
         passCardsToNextShuffler();
-        Toast.makeText(this, R.string.toast_new_game,Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.toast_new_game, Toast.LENGTH_SHORT).show();
     }
 
     private void saveGame() {
-        Log.i(TAG,"total score saved");
+        Log.i(TAG, "total score saved");
         SharedPreferences gamescore = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor editor = gamescore.edit();
         //save score
         editor.putInt(TEAM_A_GAMESCORE, totalScore_TeamA);
         editor.putInt(TEAM_B_GAMESCORE, totalScore_TeamB);
-        editor.putInt(GAME_ROUNDS,rounds);
+        editor.putInt(GAME_ROUNDS, rounds);
         // save Player names
         editor.putString(PLAYER1_NAME, player1_name);
         editor.putString(PLAYER2_NAME, player2_name);
@@ -237,38 +281,39 @@ public class MainActivity extends AppCompatActivity {
         // Commit the edits
         editor.commit();
     }
+
     private void loadGame() {
-        Log.i(TAG,"previous score loaded");
+        Log.i(TAG, "previous score loaded");
         // Set SharedPreferences
         SharedPreferences gamescore = getPreferences(MODE_PRIVATE);
         //load score
-        totalScore_TeamA = gamescore.getInt(TEAM_A_GAMESCORE,0);
-        totalScore_TeamB = gamescore.getInt(TEAM_B_GAMESCORE,0);
-        rounds = gamescore.getInt(GAME_ROUNDS,0);
+        totalScore_TeamA = gamescore.getInt(TEAM_A_GAMESCORE, 0);
+        totalScore_TeamB = gamescore.getInt(TEAM_B_GAMESCORE, 0);
+        rounds = gamescore.getInt(GAME_ROUNDS, 0);
         // load players
         player1_name = gamescore.getString(PLAYER1_NAME, getString(R.string.player_1));
-        player2_name = gamescore.getString(PLAYER2_NAME,getString(R.string.player_2));
+        player2_name = gamescore.getString(PLAYER2_NAME, getString(R.string.player_2));
         player3_name = gamescore.getString(PLAYER3_NAME, getString(R.string.player_3));
         player4_name = gamescore.getString(PLAYER4_NAME, getString(R.string.player_4));
         // Update the screen and set a toast to notify the user
         updateTotalScore();
         updatePlayerNames();
         passCardsToNextShuffler();
-        Toast.makeText(this, R.string.toast_load_game,Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.toast_load_game, Toast.LENGTH_SHORT).show();
     }
 
 
     // MARK: UI Update Methods
     // updates the score
     private void updateTotalScore() {
-        Log.d(TAG,"update Total Score");
+        Log.d(TAG, "update Total Score");
         teamA_score.setText(String.valueOf(totalScore_TeamA));
         teamB_score.setText(String.valueOf(totalScore_TeamB));
     }
 
     // updates all player names on the screen
     private void updatePlayerNames() {
-        Log.d(TAG,"update player names:");
+        Log.d(TAG, "update player names:");
         player1.setText(player1_name);
         player2.setText(player2_name);
         player3.setText(player3_name);
@@ -278,10 +323,10 @@ public class MainActivity extends AppCompatActivity {
 
     // MARK: Methods that get called by User interaction
     // gets called if you tap on an player
-    public void selectedPlayer(View view){
+    public void selectedPlayer(View view) {
         switch (view.getId()) {
             case R.id.player1_image:
-                Log.d(TAG,"player 1 action");
+                Log.d(TAG, "player 1 action");
                 if (playerActionBar1.getVisibility() == View.GONE) {
                     hideAllPlayerActionBars();
                     playerActionBar1.setVisibility(View.VISIBLE);
@@ -290,7 +335,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.player2_image:
-                Log.d(TAG,"player 3 action");
+                Log.d(TAG, "player 2 action");
                 if (playerActionBar2.getVisibility() == View.GONE) {
                     hideAllPlayerActionBars();
                     playerActionBar2.setVisibility(View.VISIBLE);
@@ -299,7 +344,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.player3_image:
-                Log.d(TAG,"player 3 action");
+                Log.d(TAG, "player 3 action");
                 if (playerActionBar3.getVisibility() == View.GONE) {
                     hideAllPlayerActionBars();
                     playerActionBar3.setVisibility(View.VISIBLE);
@@ -308,7 +353,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.player4_image:
-                Log.d(TAG,"player 4 action");
+                Log.d(TAG, "player 4 action");
                 if (playerActionBar4.getVisibility() == View.GONE) {
                     hideAllPlayerActionBars();
                     playerActionBar4.setVisibility(View.VISIBLE);
@@ -321,7 +366,8 @@ public class MainActivity extends AppCompatActivity {
                 return;
         }
     }
-    private void hideAllPlayerActionBars(){
+
+    private void hideAllPlayerActionBars() {
         playerActionBar1.setVisibility(View.GONE);
         playerActionBar2.setVisibility(View.GONE);
         playerActionBar3.setVisibility(View.GONE);
@@ -329,35 +375,120 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // finish the Round an start an new Activity for the Round Point Result
-    public void finishRound(View view){
-        if (!checkForWinner()) {
+    private void finishRound() {
+        if (checkForWinner()) { return; }
+        addTichuScore();
+        if (teamDidFinishRoundFirst()) {
+            Team team = outOrder.get(0).getTeam();
+            switch (team) {
+                case A:
+                    roundScore_TeamA += 200;
+                    break;
+                case B:
+                    roundScore_TeamB += 200;
+                    break;
+            }
+
+            newRound();
+
+            // Show a Toast that no Card Points are needed!
+            Log.i(TAG, "Round finished - no Card Points needed");
+            Toast.makeText(this,"Team "+ team.toString() +" finished as First and Second" ,Toast.LENGTH_LONG).show();
+
+        } else {
             Log.i(TAG, "Round finished - start SetRoundPointsActivity");
             Intent intent = new Intent(this, SetRoundPointsActivity.class);
             startActivityForResult(intent, ROUND_POINT_REQUEST);
         }
     }
 
+    private void addTichuScore() {
+        // get Tichu Score for Team A
+        roundScore_TeamA += playerActionBar1.getTichuScore();
+        roundScore_TeamA += playerActionBar3.getTichuScore();
+        // get Tichu Score for Team B
+        roundScore_TeamB += playerActionBar2.getTichuScore();
+        roundScore_TeamB += playerActionBar4.getTichuScore();
+    }
+
+    private boolean teamDidFinishRoundFirst() {
+        if (outOrder.size() >= 2) {
+            Players first = outOrder.get(0);
+            Players second = outOrder.get(1);
+            return (first.getTeam() == second.getTeam());
+        }
+        Log.e(TAG, "No Players in List");
+        return false;
+    }
+
     private void passCardsToNextShuffler() {
         ImageView cards = (ImageView) findViewById(R.id.game_cards);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(cards.getLayoutParams());
-        switch (rounds%4) {
+        switch (rounds % 4) {
             case 0:
                 params.addRule(RelativeLayout.RIGHT_OF, R.id.player1_image);
-                params.addRule(RelativeLayout.BELOW,R.id.player1_image);
+                params.addRule(RelativeLayout.BELOW, R.id.player1_image);
                 break;
             case 1:
                 params.addRule(RelativeLayout.LEFT_OF, R.id.player2_image);
-                params.addRule(RelativeLayout.BELOW,R.id.player2_image);
+                params.addRule(RelativeLayout.BELOW, R.id.player2_image);
                 break;
             case 2:
                 params.addRule(RelativeLayout.LEFT_OF, R.id.player3_image);
-                params.addRule(RelativeLayout.ABOVE,R.id.player3_image);
+                params.addRule(RelativeLayout.ABOVE, R.id.player3_image);
                 break;
             case 3:
                 params.addRule(RelativeLayout.RIGHT_OF, R.id.player4_image);
-                params.addRule(RelativeLayout.ABOVE,R.id.player4_image);
+                params.addRule(RelativeLayout.ABOVE, R.id.player4_image);
                 break;
         }
         cards.setLayoutParams(params);
     }
+
+    public void redoPlayersOut() {
+        Players player = outOrder.get(outOrder.size() - 1);
+        switch (player) {
+            case P1:
+                playerActionBar1.redoPlayerOut();
+                break;
+            case P2:
+                playerActionBar2.redoPlayerOut();
+                break;
+            case P3:
+                playerActionBar3.redoPlayerOut();
+                break;
+            case P4:
+                playerActionBar4.redoPlayerOut();
+                break;
+        }
+        MainActivity.mPlayersOut--;
+    }
+
+    // Callback methods
+    public void playerOut(Players player) {
+        Log.d(TAG, player.toString() + " out _ add");
+        outOrder.add(player);
+        // Check if all Player finished
+        if (mPlayersOut == 2) {
+            if (teamDidFinishRoundFirst()) {
+                Log.d(TAG, "Round finished due to Team out");
+                finishRound();
+            }
+        }
+        if (mPlayersOut == 4) {
+            Log.d(TAG, "Round finished");
+            finishRound();
+        }
+        Snackbar snackbar = Snackbar
+                .make(findViewById(R.id.activity_main), player.toString() + " out!", Snackbar.LENGTH_LONG)
+                .setAction("UNDO", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        redoPlayersOut();
+                    }
+                });
+        snackbar.setActionTextColor(getResources().getColor(R.color.colorPrimaryDark));
+        snackbar.show();
+    }
+
 }

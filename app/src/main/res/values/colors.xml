@@ -2,12 +2,13 @@
 <resources>
     <color name="colorPrimary">#ffbb00</color>
     <color name="colorPrimaryDark">#ffa726</color>
-    <color name="colorAccent">#bdbdbd</color>
+    <color name="colorAccent">#00bcd4</color>
 
     <color name="teamA">#f4511e</color>
     <color name="teamB">#0969A2</color>
     <!-- f44336 _ 2196f3 -->
 
+    <color name="line">#bdbdbd</color>
     <color name="player_actionbar_background">#AA333333</color>
     <color name="table_border">#AA333333</color>
     <color name="table">#5a8993</color>
