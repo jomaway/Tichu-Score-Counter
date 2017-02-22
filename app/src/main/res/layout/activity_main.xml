@@ -93,7 +93,7 @@
             app:riv_border_width="@dimen/table_border_width"
             app:riv_oval="true" />
 
-
+        <!-- Player 1 -->
         <com.makeramen.roundedimageview.RoundedImageView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/player1_image"
             style="@style/PlayerImageStyle"
@@ -109,11 +109,12 @@
             android:layout_below="@id/player1_image"
             android:text="@string/player_1" />
 
+        <!-- Player 2 -->
         <com.makeramen.roundedimageview.RoundedImageView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/player2_image"
             style="@style/PlayerImageStyle"
             android:layout_alignParentEnd="true"
-            android:src="@drawable/ic_baby"
+            android:src="@drawable/girl"
             app:riv_border_color="@color/teamB"
             app:riv_border_width="@dimen/player_image_border_width"
             app:riv_mutate_background="true"
@@ -126,6 +127,7 @@
             android:layout_below="@id/player2_image"
             android:text="@string/player_2" />
 
+        <!-- Player 3 -->
         <com.makeramen.roundedimageview.RoundedImageView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/player3_image"
             style="@style/PlayerImageStyle"
@@ -144,6 +146,7 @@
             android:layout_alignParentEnd="true"
             android:text="@string/player_3" />
 
+        <!-- Player 4 -->
         <com.makeramen.roundedimageview.RoundedImageView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/player4_image"
             style="@style/PlayerImageStyle"

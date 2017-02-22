@@ -25,6 +25,8 @@
 
     <string name="menu_new_game">New Game</string>
     <string name="menu_set_players">Set Players</string>
+    <string name="menu_redo_round">Undo Last Round</string>
+    <string name="menu_reset_round">Reset Current Round</string>
     <string name="menu_settings">Settings</string>
 
     <string name="toast_new_game">New Game started</string>
@@ -32,4 +34,6 @@
 
     <string name="snack_player">Player</string>
     <string name="snack_out">out</string>
+
+    <string name="dialog_card_title">Enter Card Score</string>
 </resources>

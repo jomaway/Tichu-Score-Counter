@@ -19,7 +19,7 @@
     <dimen name="player_image_border_width">1dp</dimen>
 
     <dimen name="game_cards_size">40dp</dimen>
-    <dimen name="game_cards_margin">15dp</dimen>
+    <dimen name="game_cards_margin">20dp</dimen>
 
     <dimen name="teambar_margin_bottom">16dp</dimen>
     <dimen name="team_name_text_size">22sp</dimen>

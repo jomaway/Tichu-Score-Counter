@@ -1,5 +1,9 @@
 package de.jomaway.tichuscorecounter;
 
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,10 +19,15 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements PlayerOutCallback {
+import static de.jomaway.tichuscorecounter.Players.P1;
+import static de.jomaway.tichuscorecounter.Players.P2;
+import static de.jomaway.tichuscorecounter.Players.P3;
+
+public class MainActivity extends AppCompatActivity implements PlayerOutCallback, CardScoreDialogFragment.OnCardScoreSelectedListener {
     // Constants
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int PLAYER_ACTIONBAR_PLAYER_TAG = 33;
@@ -73,6 +82,9 @@ public class MainActivity extends AppCompatActivity implements PlayerOutCallback
     int roundScore_TeamA;
     int roundScore_TeamB;
 
+    int lastScore_TeamA;
+    int lastScore_TeamB;
+
     List<Players> outOrder = new ArrayList<Players>();
 
     // MARK: App Lifecycle Methods
@@ -106,7 +118,6 @@ public class MainActivity extends AppCompatActivity implements PlayerOutCallback
         playerActionBar3.setPlayerOutCallback(this, Players.P3);
         playerActionBar4.setPlayerOutCallback(this, Players.P4);
 
-
         // load Game
         loadGame();
     }
@@ -134,6 +145,13 @@ public class MainActivity extends AppCompatActivity implements PlayerOutCallback
                 intent.putExtra(SetPlayersActivity.EXTRA_PLAYER4, player4_name);
                 startActivityForResult(intent, SET_PLAYERS_REQUEST);
                 return true;
+            case R.id.menu_redoRound:
+                // info max one Round can be undone
+                redoRound();
+                return true;
+            case R.id.menu_resetRound:
+                resetRound();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -146,13 +164,7 @@ public class MainActivity extends AppCompatActivity implements PlayerOutCallback
         // Check for the right Result
         switch (resultCode) {
             case RESULT_OK:
-                if (requestCode == ROUND_POINT_REQUEST) {
-                    int roundScoreTeamA = data.getIntExtra(SetRoundPointsActivity.EXTRA_TEAM_A_SCORE, 0);
-                    int roundScoreTeamB = data.getIntExtra(SetRoundPointsActivity.EXTRA_TEAM_B_SCORE, 0);
-                    addPoints(roundScoreTeamA, roundScoreTeamB);
-                    // start new Round
-                    newRound();
-                } else if (requestCode == SET_PLAYERS_REQUEST) {
+                if (requestCode == SET_PLAYERS_REQUEST) {
                     player1_name = data.getStringExtra(SetPlayersActivity.EXTRA_PLAYER1);
                     player2_name = data.getStringExtra(SetPlayersActivity.EXTRA_PLAYER2);
                     player3_name = data.getStringExtra(SetPlayersActivity.EXTRA_PLAYER3);
@@ -193,22 +205,49 @@ public class MainActivity extends AppCompatActivity implements PlayerOutCallback
 
     // new Round
     private void newRound() {
+        // Save the Score
+        lastScore_TeamA = totalScore_TeamA;
+        lastScore_TeamB = totalScore_TeamB;
         totalScore_TeamA += roundScore_TeamA;
         totalScore_TeamB += roundScore_TeamB;
+
+        // Check if a Team won already
+        checkForWinner();
+
+        // Reset all Round based variables
+        resetRound();
+        updateTotalScore();
+        passCardsToNextShuffler();
+
+        Snackbar snackbar = Snackbar
+                .make(findViewById(R.id.activity_main), "New Round started", Snackbar.LENGTH_LONG)
+                .setAction("UNDO", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        redoRound();
+                    }
+                });
+        snackbar.setActionTextColor(getResources().getColor(R.color.colorPrimaryDark));
+        snackbar.show();
+    }
+
+    private void redoRound() {
+        rounds--;
+        totalScore_TeamA = lastScore_TeamA;
+        totalScore_TeamB = lastScore_TeamB;
+        updateTotalScore();
+        passCardsToNextShuffler();
+        resetRound();
+    }
+
+    // Resets all Round based variables
+    private void resetRound() {
         mPlayersOut = 0;
         outOrder.clear();
         roundScore_TeamA = 0;
         roundScore_TeamB = 0;
-        rounds++;
         resetActionBars();
-        updateTotalScore();
-        passCardsToNextShuffler();
         hideAllPlayerActionBars();
-
-        Log.d(TAG,"P1AB: isOut:" + String.valueOf(playerActionBar1.getIsOut()));
-        Log.d(TAG,"P2AB: isOut:" + String.valueOf(playerActionBar2.getIsOut()));
-        Log.d(TAG,"P3AB: isOut:" + String.valueOf(playerActionBar3.getIsOut()));
-        Log.d(TAG,"P4AB: isOut:" + String.valueOf(playerActionBar4.getIsOut()));
     }
 
     // Reset all Actionbars bevor a new Round
@@ -217,14 +256,6 @@ public class MainActivity extends AppCompatActivity implements PlayerOutCallback
         playerActionBar2.reset();
         playerActionBar3.reset();
         playerActionBar4.reset();
-    }
-
-    // Add Points to the total Score of both Teams
-    private void addPoints(int teamA_Points, int teamB_Points) {
-        totalScore_TeamA += teamA_Points;
-        totalScore_TeamB += teamB_Points;
-        // Check if a Team won already
-        checkForWinner();
     }
 
     private boolean checkForWinner() {
@@ -249,8 +280,7 @@ public class MainActivity extends AppCompatActivity implements PlayerOutCallback
                     public void onClick(DialogInterface dialogInterface, int i) {
                         newGame();
                     }
-                })
-                .setNegativeButton("no", null);
+                });
         AlertDialog dialog = builder.create();
         dialog.show();
     }
@@ -376,8 +406,10 @@ public class MainActivity extends AppCompatActivity implements PlayerOutCallback
 
     // finish the Round an start an new Activity for the Round Point Result
     private void finishRound() {
-        if (checkForWinner()) { return; }
+        //if (checkForWinner()) { return; }
+        // Add Points for a Won or lost Tichu to the Round Points
         addTichuScore();
+        // check for TeamOutWin
         if (teamDidFinishRoundFirst()) {
             Team team = outOrder.get(0).getTeam();
             switch (team) {
@@ -393,12 +425,13 @@ public class MainActivity extends AppCompatActivity implements PlayerOutCallback
 
             // Show a Toast that no Card Points are needed!
             Log.i(TAG, "Round finished - no Card Points needed");
-            Toast.makeText(this,"Team "+ team.toString() +" finished as First and Second" ,Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Team " + team.toString() + " finished as First and Second", Toast.LENGTH_LONG).show();
 
         } else {
-            Log.i(TAG, "Round finished - start SetRoundPointsActivity");
-            Intent intent = new Intent(this, SetRoundPointsActivity.class);
-            startActivityForResult(intent, ROUND_POINT_REQUEST);
+            showCartPointsDialog();
+            //Log.i(TAG, "Round finished - start SetRoundPointsActivity");
+            //Intent intent = new Intent(this, SetRoundPointsActivity.class);
+            //startActivityForResult(intent, ROUND_POINT_REQUEST);
         }
     }
 
@@ -446,7 +479,9 @@ public class MainActivity extends AppCompatActivity implements PlayerOutCallback
     }
 
     public void redoPlayersOut() {
-        Players player = outOrder.get(outOrder.size() - 1);
+        int last = outOrder.size() - 1;
+        Players player = outOrder.get(last);
+        outOrder.remove(last);
         switch (player) {
             case P1:
                 playerActionBar1.redoPlayerOut();
@@ -469,16 +504,26 @@ public class MainActivity extends AppCompatActivity implements PlayerOutCallback
         Log.d(TAG, player.toString() + " out _ add");
         outOrder.add(player);
         // Check if all Player finished
-        if (mPlayersOut == 2) {
-            if (teamDidFinishRoundFirst()) {
-                Log.d(TAG, "Round finished due to Team out");
+        switch (mPlayersOut) {
+            case 2:
+                if (teamDidFinishRoundFirst()) {
+                    Log.d(TAG, "Round finished due to Team out");
+                    finishRound();
+                } else {
+                    showPlayerOutSnackbar(player);
+                }
+                break;
+            case 3:
+                Log.d(TAG, "Round finished");
                 finishRound();
-            }
+                break;
+            default:
+                showPlayerOutSnackbar(player);
+                break;
         }
-        if (mPlayersOut == 4) {
-            Log.d(TAG, "Round finished");
-            finishRound();
-        }
+    }
+
+    private void showPlayerOutSnackbar(Players player) {
         Snackbar snackbar = Snackbar
                 .make(findViewById(R.id.activity_main), player.toString() + " out!", Snackbar.LENGTH_LONG)
                 .setAction("UNDO", new View.OnClickListener() {
@@ -491,4 +536,20 @@ public class MainActivity extends AppCompatActivity implements PlayerOutCallback
         snackbar.show();
     }
 
+    private void showCartPointsDialog() {
+        FragmentManager fm = getFragmentManager();
+        CardScoreDialogFragment dialogFragment = new CardScoreDialogFragment();
+        dialogFragment.show(fm, "Sample Fragment");
+    }
+
+    public void onCardScoreSelected(int cardScoreTeamA, int cardScoreTeamB) {
+        if ((cardScoreTeamA + cardScoreTeamB) == 100) {
+            roundScore_TeamA += cardScoreTeamA;
+            roundScore_TeamB += cardScoreTeamB;
+            // start new Round
+            newRound();
+        } else {
+            Log.e(TAG,"wrong Card Points");
+        }
+    }
 }

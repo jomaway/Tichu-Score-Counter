@@ -14,5 +14,15 @@
         android:orderInCategory="200"
         android:title="@string/menu_set_players"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_redoRound"
+        android:orderInCategory="300"
+        android:title="@string/menu_redo_round"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_resetRound"
+        android:orderInCategory="400"
+        android:title="@string/menu_reset_round"
+        app:showAsAction="never" />
 
 </menu>

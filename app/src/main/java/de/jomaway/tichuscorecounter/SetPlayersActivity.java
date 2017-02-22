@@ -8,14 +8,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
-import static android.R.attr.data;
-import static de.jomaway.tichuscorecounter.R.id.player1_name;
-import static de.jomaway.tichuscorecounter.R.id.player2_name;
-import static de.jomaway.tichuscorecounter.R.id.player3_name;
-import static de.jomaway.tichuscorecounter.R.id.player4_name;
-import static de.jomaway.tichuscorecounter.SetRoundPointsActivity.EXTRA_TEAM_A_SCORE;
-import static de.jomaway.tichuscorecounter.SetRoundPointsActivity.EXTRA_TEAM_B_SCORE;
-
 public class SetPlayersActivity extends AppCompatActivity {
     private static final String TAG = "SetPlayersActivity";
 
